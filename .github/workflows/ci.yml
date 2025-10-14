@@ -19,7 +19,7 @@ jobs:
       - name: Test
         run: cargo test --workspace --all-targets
       - name: Upload linux binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: chronokey-linux
           path: |
@@ -39,7 +39,7 @@ jobs:
       - name: Test
         run: cargo test --workspace --all-targets
       - name: Upload windows binaries
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: chronokey-windows
           path: |
