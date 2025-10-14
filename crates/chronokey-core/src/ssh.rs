@@ -1,10 +1,8 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use tempfile::Builder;
 
 use anyhow::{Context, Result};
-
-use crate::fsutil::ensure_secure_file_permissions;
+use tempfile::Builder;
 
 pub fn generate_keypair(path: &Path, comment: &str) -> Result<PathBuf> {
     if let Some(parent) = path.parent() {
