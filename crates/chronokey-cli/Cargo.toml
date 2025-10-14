@@ -17,5 +17,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 base64 = { version = "0.21", default-features = false, features = ["std"] }
 anyhow = "1.0"
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["fmt", "std"] }
+tracing-subscriber = { version = "0.3", features = ["fmt", "std", "env-filter"] }
+aes-gcm = "0.10.1"
+sha2 = "0.10"
 rand = { version = "0.8", features = ["std", "std_rng"] }

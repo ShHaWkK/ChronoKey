@@ -9,8 +9,7 @@ use std::fs::Permissions;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 
-#[cfg(windows)]
-use std::os::windows::fs::PermissionsExt;
+
 
 pub fn user_home_dir() -> io::Result<PathBuf> {
     home_dir().ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "home directory not found"))
@@ -38,7 +37,7 @@ pub fn ensure_secure_file_permissions(path: &Path) -> io::Result<()> {
 
     #[cfg(windows)]
     {
-        let mut permissions = fs::metadata(path)?.permissions();
+        let mut permissions = path.metadata()?.permissions();
         permissions.set_readonly(false);
         fs::set_permissions(path, permissions)?;
     }

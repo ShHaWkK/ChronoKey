@@ -3,13 +3,11 @@ use std::process::Command;
 
 use anyhow::{Context, Result};
 
-pub fn generate_keypair(path: &Path, comment: &str) -> Result<PathBuf> {
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .with_context(|| format!("failed to create directory {}", parent.display()))?;
-    }
+use crate::fsutil::ensure_secure_file_permissions;
 
-    let status = Command::new("ssh-keygen")
+pub fn generate_key_pair(key_path: &Path, comment: &str) -> Result<()> {
+    let ssh_keygen_path = find_ssh_keygen_path()?;
+    let status = Command::new(ssh_keygen_path)
         .arg("-t")
         .arg("ed25519")
         .arg("-f")
@@ -28,7 +26,25 @@ pub fn generate_keypair(path: &Path, comment: &str) -> Result<PathBuf> {
         ));
     }
 
-    let mut pubkey = path.to_path_buf();
-    pubkey.set_extension("pub");
-    Ok(pubkey)
+    ensure_secure_file_permissions(key_path)
+        .context("failed to secure private key permissions")?;
+
+    Ok(())
+}
+
+fn find_ssh_keygen_path() -> Result<PathBuf> {
+    let common_paths = [
+        "C:\Program Files\Git\usr\bin\ssh-keygen.exe",
+        "C:\Windows\System32\OpenSSH\ssh-keygen.exe",
+    ];
+
+    for path in common_paths.iter() {
+        let p = PathBuf::from(path);
+        if p.exists() {
+            return Ok(p);
+        }
+    }
+
+    // Fallback to just "ssh-keygen" if not found in common paths
+    Ok(PathBuf::from("ssh-keygen"))
 }

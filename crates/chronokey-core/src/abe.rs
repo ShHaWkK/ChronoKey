@@ -37,9 +37,9 @@ impl AbeEngine {
         let key = random_bytes::<32>();
         let nonce_bytes = random_bytes::<12>();
         let cipher = Aes256Gcm::new_from_slice(&key).expect("key length");
-        let nonce = Nonce::from_slice(&nonce_bytes);
+        let nonce = Nonce::from(nonce_bytes);
         let ciphertext = cipher
-            .encrypt(nonce, plaintext)
+            .encrypt(&nonce, plaintext)
             .context("AES-GCM encryption failure")?;
 
         let mut wrapped_keys = Vec::new();
@@ -86,12 +86,13 @@ impl AbeEngine {
                 let nonce_bytes = STANDARD
                     .decode(&ciphertext.nonce_b64)
                     .context("invalid nonce encoding")?;
-                let nonce = Nonce::from_slice(&nonce_bytes);
+                let nonce_array: &[u8; 12] = nonce_bytes.as_slice().try_into().context("invalid nonce length")?;
+                let nonce = Nonce::from(*nonce_array);
                 let cipher_bytes = STANDARD
                     .decode(&ciphertext.ciphertext_b64)
                     .context("invalid ciphertext encoding")?;
                 return cipher
-                    .decrypt(nonce, cipher_bytes.as_ref())
+                    .decrypt(&nonce, cipher_bytes.as_ref())
                     .context("AES-GCM decryption failure");
             }
         }

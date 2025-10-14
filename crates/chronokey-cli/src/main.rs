@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use chronokey_core::abe::{AbeCiphertext, AbeEngine};
 use chronokey_core::ca::CaStore;
@@ -97,7 +97,7 @@ struct BundleDocument {
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter("info")
-        .json()
+
         .init();
     let cli = Cli::parse();
     match cli.command {
@@ -207,15 +207,15 @@ fn local_encrypt(data: &[u8]) -> Result<String> {
 
     let passphrase = std::env::var("CHRONOKEY_BUNDLE_KEY")
         .context("CHRONOKEY_BUNDLE_KEY environment variable required for local encryption")?;
-    let mut hasher = Sha256::new();
+    let mut hasher = Sha256::new_with_prefix(passphrase.as_bytes());
     hasher.update(passphrase.as_bytes());
     let key_bytes = hasher.finalize();
     let cipher = Aes256Gcm::new_from_slice(&key_bytes).expect("32 bytes");
     let mut nonce_bytes = [0u8; 12];
     rand::rngs::OsRng.fill_bytes(&mut nonce_bytes);
-    let nonce = Nonce::from_slice(&nonce_bytes);
+    let nonce = Nonce::from(nonce_bytes);
     let ciphertext = cipher
-        .encrypt(nonce, data)
+        .encrypt(&nonce, data)
         .context("AES-GCM encryption failure")?;
     let payload = serde_json::json!({
         "nonce": STANDARD.encode(nonce_bytes),

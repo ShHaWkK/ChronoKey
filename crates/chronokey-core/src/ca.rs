@@ -52,7 +52,8 @@ impl CaStore {
             ));
         }
 
-        let status = Command::new("ssh-keygen")
+        let ssh_keygen_path = find_ssh_keygen_path()?;
+        let status = Command::new(ssh_keygen_path)
             .arg("-t")
             .arg("ed25519")
             .arg("-f")
@@ -122,7 +123,8 @@ pub fn sign_with_ca(
         principals.join(",")
     };
 
-    let status = Command::new("ssh-keygen")
+    let ssh_keygen_path = find_ssh_keygen_path()?;
+    let status = Command::new(ssh_keygen_path)
         .arg("-s")
         .arg(&ca.private_key)
         .arg("-I")
@@ -171,4 +173,21 @@ fn default_cert_path(pubkey: &Path) -> PathBuf {
         path.set_file_name(format!("{}-cert.pub", filename));
     }
     path
+}
+
+fn find_ssh_keygen_path() -> Result<PathBuf> {
+    let common_paths = [
+        "C:\Program Files\Git\usr\bin\ssh-keygen.exe",
+        "C:\Windows\System32\OpenSSH\ssh-keygen.exe",
+    ];
+
+    for path in common_paths.iter() {
+        let p = PathBuf::from(path);
+        if p.exists() {
+            return Ok(p);
+        }
+    }
+
+    // Fallback to just "ssh-keygen" if not found in common paths
+    Ok(PathBuf::from("ssh-keygen"))
 }

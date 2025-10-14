@@ -11,7 +11,7 @@ use axum::response::{IntoResponse, Response};
 use axum::routing::post;
 use axum::{Json, Router};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
-use clap::Parser;
+
 use tempfile::NamedTempFile;
 use tokio::signal;
 use tracing::{error, info};
@@ -22,6 +22,8 @@ use chronokey_core::config::{load_config, IssuerConfig, ValidityPolicy};
 use chronokey_core::token::{GrantToken, TokenSigner};
 use chronokey_core::validity::parse_ttl_seconds;
 use chronokey_core::zkp::{ZkEngine, ZkProof};
+
+use clap::Parser;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -40,7 +42,7 @@ struct AppState {
 impl AppState {
     fn from_config(config: IssuerConfig) -> Result<Self> {
         let signer = TokenSigner::from_env(&config.hmac_secret_env)?;
-        let ca_key = CaKeyPair::new(config.ca_private_key);
+        let ca_key = CaKeyPair::new(config.ca_private_key.clone());
         if !ca_key.private_key.exists() {
             return Err(anyhow!(
                 "CA private key {} not found",
@@ -51,7 +53,7 @@ impl AppState {
             ca_key,
             token_signer: signer,
             allowed_principals: config
-                .allowed_principals
+                .allowed_principals.clone()
                 .map(|list| list.into_iter().collect()),
             validity_policy: ValidityPolicy::from_config(&config),
         })
@@ -62,7 +64,7 @@ impl AppState {
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter("info")
-        .json()
+
         .init();
     let cli = Cli::parse();
     let config = load_config(&cli.config).with_context(|| "failed to load issuer config")?;
@@ -77,7 +79,7 @@ async fn main() -> Result<()> {
         .route("/redeem_zk", post(redeem_zk_handler))
         .with_state(state.clone());
 
-    info!("starting ChronoKey issuer", %bind_addr);
+    info!("starting ChronoKey issuer on {}", bind_addr);
 
     axum::Server::bind(&bind_addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
@@ -294,7 +296,7 @@ impl ApiError {
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
-        error!("api error": %self.message);
+        error!("api error: {}", self.message);
         let body = Json(serde_json::json!({ "error": self.message }));
         (self.status, body).into_response()
     }
