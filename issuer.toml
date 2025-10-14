@@ -1,0 +1,3 @@
+ca_private_key = "C:\\Users\\PC\\.chronokey\\ca_ed25519"
+default_validity = "+30m"
+bind_addr = "127.0.0.1:8080"
