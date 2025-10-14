@@ -1,0 +1,19 @@
+[package]
+name = "tempogate-issuer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.6"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tempogate-core = { path = "../tempogate-core" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "std"] }
+anyhow = "1.0"
+thiserror = "1.0"
+hyper = { version = "0.14", features = ["full"] }
+tower = "0.4"
+base64 = { version = "0.21", default-features = false, features = ["std"] }
+tempfile = "3"

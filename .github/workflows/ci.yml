@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Build
+        run: cargo build --workspace --all-targets
+      - name: Test
+        run: cargo test --workspace --all-targets
+      - name: Upload linux binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: tempogate-linux
+          path: |
+            target/debug/tempogate
+            target/debug/tempogate-issuer
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Build
+        run: cargo build --workspace --all-targets
+      - name: Test
+        run: cargo test --workspace --all-targets
+      - name: Upload windows binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: tempogate-windows
+          path: |
+            target\debug\tempogate.exe
+            target\debug\tempogate-issuer.exe

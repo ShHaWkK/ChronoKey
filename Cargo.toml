@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "tempogate",
+    "tempogate-issuer",
+    "tempogate-core",
+]
+resolver = "2"

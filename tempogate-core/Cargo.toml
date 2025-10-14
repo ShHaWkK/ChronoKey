@@ -1,0 +1,27 @@
+[package]
+name = "tempogate-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+rand = { version = "0.8", features = ["std", "std_rng"] }
+rand_core = "0.6"
+hmac = "0.12"
+sha2 = "0.10"
+base64 = { version = "0.21", default-features = false, features = ["std"] }
+ed25519-dalek = { version = "1", features = ["rand"] }
+curve25519-dalek = { version = "4", default-features = false, features = ["std"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "std"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+toml = "0.8"
+serde_yaml = "0.9"
+regex = "1"
+hex = "0.4"
+dirs = "5"
+once_cell = "1"
+aes-gcm = { version = "0.10", features = ["std"] }
