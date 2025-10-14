@@ -22,9 +22,11 @@
             <form action="/token" method="post">
                 <label for="subject">Sujet (utilisateur):</label>
                 <input type="text" id="subject" name="subject" required>
+                <p class="field-description">L'identifiant de l'utilisateur qui utilisera le token. Peut être un nom d'utilisateur ou une adresse e-mail.</p>
 
                 <label for="principals">Principals (comptes système):</label>
                 <input type="text" id="principals" name="principals" required>
+                <p class="field-description">Les comptes système auxquels l'utilisateur peut se connecter, séparés par des virgules (par exemple, root, admin).</p>
 
                 <button type="submit">Générer le token</button>
             </form>
