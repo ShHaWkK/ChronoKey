@@ -92,6 +92,8 @@ async fn generate_action(
     State(tera): State<Tera>,
     Form(params): Form<GenerateParams>,
 ) -> impl IntoResponse {
+    let exe_path = env::current_exe().unwrap();
+    let workspace_root = exe_path.parent().unwrap().parent().unwrap().parent().unwrap();
     let (private_key, public_key) = generate_keypair_in_memory(&params.comment).unwrap();
 
     let new_key = KeyEntry {
@@ -100,13 +102,15 @@ async fn generate_action(
         private_key: private_key.clone(),
     };
 
-    let mut keys: Vec<KeyEntry> = match fs::read_to_string("keys.json").await {
+    let data_path = workspace_root.join("data").join("keys.json");
+
+    let mut keys: Vec<KeyEntry> = match fs::read_to_string(&data_path).await {
         Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| vec![]),
         Err(_) => vec![],
     };
 
     keys.push(new_key);
-    fs::write("keys.json", serde_json::to_string_pretty(&keys).unwrap())
+    fs::write(&data_path, serde_json::to_string_pretty(&keys).unwrap())
         .await
         .unwrap();
 
@@ -188,7 +192,11 @@ async fn token_action(
 }
 
 async fn list_keys(State(tera): State<Tera>) -> Html<String> {
-    let keys: Vec<KeyEntry> = match fs::read_to_string("keys.json").await {
+    let exe_path = env::current_exe().unwrap();
+    let workspace_root = exe_path.parent().unwrap().parent().unwrap().parent().unwrap();
+    let data_path = workspace_root.join("data").join("keys.json");
+
+    let keys: Vec<KeyEntry> = match fs::read_to_string(&data_path).await {
         Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| vec![]),
         Err(_) => vec![],
     };
