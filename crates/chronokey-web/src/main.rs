@@ -5,6 +5,7 @@ use axum::{
     Form, Router,
 };
 use std::net::SocketAddr;
+use std::env;
 
 use chronokey_core::ca::{sign_public_key_in_memory, CaStore};
 use chronokey_core::ssh::generate_keypair_in_memory;
@@ -33,7 +34,20 @@ struct IssueParams {
 }
 
 pub async fn run() {
-    let tera = Tera::new("crates/chronokey-web/templates/**/*").unwrap();
+    let exe_path = env::current_exe().unwrap();
+    let workspace_root = exe_path.parent().unwrap().parent().unwrap().parent().unwrap();
+    let template_path = workspace_root
+        .join("crates")
+        .join("chronokey-web")
+        .join("templates")
+        .join("**")
+        .join("*");
+    let static_path = workspace_root
+        .join("crates")
+        .join("chronokey-web")
+        .join("templates");
+
+    let tera = Tera::new(template_path.to_str().unwrap()).unwrap();
 
     let app = Router::new()
         .route("/", get(index))
@@ -44,11 +58,12 @@ pub async fn run() {
         .route("/token", get(token_form))
         .route("/token", post(token_action))
         .route("/list", get(list_keys))
-        .nest_service("/static", ServeDir::new("crates/chronokey-web/templates"))
+        .nest_service("/static", ServeDir::new(static_path))
         .with_state(tera);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
+    println!("listening on {}", addr);
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }

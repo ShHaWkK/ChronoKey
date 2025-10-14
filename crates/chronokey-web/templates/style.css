@@ -144,3 +144,9 @@ table tr:hover {
 .text-center {
     text-align: center;
 }
+
+.field-description {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
