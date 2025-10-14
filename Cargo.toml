@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/chronokey-cli",
+    "crates/chronokey-issuer",
+    "crates/chronokey-core",
+]
+resolver = "2"
