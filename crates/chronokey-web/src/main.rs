@@ -32,8 +32,7 @@ struct IssueParams {
     token: String,
 }
 
-#[tokio::main]
-async fn main() {
+pub async fn run() {
     let tera = Tera::new("crates/chronokey-web/templates/**/*").unwrap();
 
     let app = Router::new()
@@ -49,7 +48,7 @@ async fn main() {
         .with_state(tera);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    println!("listening on {}", addr);
+
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
