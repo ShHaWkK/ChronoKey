@@ -53,6 +53,11 @@ pub async fn run() {
     axum::serve(listener, app).await.unwrap();
 }
 
+#[tokio::main]
+async fn main() {
+    run().await;
+}
+
 async fn index(State(tera): State<Tera>) -> Html<String> {
     let context = Context::new();
     Html(tera.render("index.html", &context).unwrap())

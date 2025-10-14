@@ -1,0 +1,51 @@
+{
+  "$schema": "../../../node_modules/@tauri-apps/cli/schema.json",
+  "identifier": "fr.chronokey",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "cargo run -p chronokey-web",
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "../chronokey-web/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "ChronoKey",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "main-capability",
+          "description": "Main window capability",
+          "windows": ["main"],
+          "permissions": [
+            {
+              "identifier": "opener:allow-open-url",
+              "allow": [
+                {
+                  "url": "http://**/*"
+                },
+                {
+                  "url": "https://**/*"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+  }
+}

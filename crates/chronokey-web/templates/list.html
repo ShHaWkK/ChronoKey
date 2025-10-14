@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{ key.comment }}</td>
                                 <td><pre>{{ key.public_key }}</pre></td>
-                                <td><button onclick="copyToClipboard('{{ key.private_key | escape(format="js") }}')">Copier la clé privée</button></td>
+                                <td><button onclick="copyToClipboard('{{ key.private_key | escape }}')">Copier la clé privée</button></td>
                             </tr>
                         {% endfor %}
                     </tbody>
