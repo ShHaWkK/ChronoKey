@@ -177,8 +177,8 @@ fn default_cert_path(pubkey: &Path) -> PathBuf {
 
 fn find_ssh_keygen_path() -> Result<PathBuf> {
     let common_paths = [
-        "C:\Program Files\Git\usr\bin\ssh-keygen.exe",
-        "C:\Windows\System32\OpenSSH\ssh-keygen.exe",
+        r"C:\Program Files\Git\usr\bin\ssh-keygen.exe",
+        r"C:\Windows\System32\OpenSSH\ssh-keygen.exe",
     ];
 
     for path in common_paths.iter() {

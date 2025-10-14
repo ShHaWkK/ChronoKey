@@ -5,7 +5,12 @@ use anyhow::{Context, Result};
 
 use crate::fsutil::ensure_secure_file_permissions;
 
-pub fn generate_key_pair(key_path: &Path, comment: &str) -> Result<()> {
+pub fn generate_keypair(path: &Path, comment: &str) -> Result<PathBuf> {
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .with_context(|| format!("failed to create directory {}", parent.display()))?;
+    }
+
     let ssh_keygen_path = find_ssh_keygen_path()?;
     let status = Command::new(ssh_keygen_path)
         .arg("-t")
@@ -26,16 +31,15 @@ pub fn generate_key_pair(key_path: &Path, comment: &str) -> Result<()> {
         ));
     }
 
-    ensure_secure_file_permissions(key_path)
-        .context("failed to secure private key permissions")?;
-
-    Ok(())
+    let mut pubkey = path.to_path_buf();
+    pubkey.set_extension("pub");
+    Ok(pubkey)
 }
 
 fn find_ssh_keygen_path() -> Result<PathBuf> {
     let common_paths = [
-        "C:\Program Files\Git\usr\bin\ssh-keygen.exe",
-        "C:\Windows\System32\OpenSSH\ssh-keygen.exe",
+        r"C:\Program Files\Git\usr\bin\ssh-keygen.exe",
+        r"C:\Windows\System32\OpenSSH\ssh-keygen.exe",
     ];
 
     for path in common_paths.iter() {
