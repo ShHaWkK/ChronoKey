@@ -4,7 +4,7 @@ use std::process::Command;
 
 use anyhow::{Context, Result};
 
-use crate::fsutil::{ensure_dir, ensure_secure_file_permissions, tempogate_dir};
+use crate::fsutil::{chronokey_dir, ensure_dir, ensure_secure_file_permissions};
 
 const CA_KEY_FILENAME: &str = "ca_ed25519";
 
@@ -32,8 +32,8 @@ pub struct CaStore {
 
 impl CaStore {
     pub fn default() -> Result<Self> {
-        let root = tempogate_dir().context("failed to resolve TempoGate directory")?;
-        ensure_dir(&root).context("failed to create TempoGate directory")?;
+        let root = chronokey_dir().context("failed to resolve ChronoKey directory")?;
+        ensure_dir(&root).context("failed to create ChronoKey directory")?;
         Ok(Self { root })
     }
 
@@ -60,7 +60,7 @@ impl CaStore {
             .arg("-N")
             .arg("")
             .arg("-C")
-            .arg("TempoGate CA")
+            .arg("ChronoKey CA")
             .status()
             .context("failed to execute ssh-keygen")?;
 
@@ -81,7 +81,7 @@ impl CaStore {
         let key = self.key_pair();
         if !key.private_key.exists() {
             return Err(anyhow::anyhow!(
-                "CA private key missing at {}. Run `tempogate init-ca`.",
+                "CA private key missing at {}. Run `chronokey init-ca`.",
                 key.private_key.display()
             ));
         }

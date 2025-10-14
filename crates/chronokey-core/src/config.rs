@@ -22,7 +22,7 @@ fn default_bind_addr() -> String {
 }
 
 fn default_hmac_env() -> String {
-    "TEMPOGATE_HMAC_SECRET".to_string()
+    "CHRONOKEY_HMAC_SECRET".to_string()
 }
 
 #[derive(Debug, Clone)]

@@ -57,7 +57,7 @@ impl TokenSigner {
     }
 
     pub fn sign(&self, claims: &TokenClaims) -> Result<String> {
-        let header = serde_json::json!({ "alg": "HS256", "typ": "TG" });
+        let header = serde_json::json!({ "alg": "HS256", "typ": "CK" });
         let header_b64 = URL_SAFE_NO_PAD.encode(serde_json::to_vec(&header)?);
         let payload_b64 = URL_SAFE_NO_PAD.encode(serde_json::to_vec(claims)?);
         let signing_input = format!("{}.{}", header_b64, payload_b64);

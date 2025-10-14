@@ -16,9 +16,9 @@ pub fn user_home_dir() -> io::Result<PathBuf> {
     home_dir().ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "home directory not found"))
 }
 
-pub fn tempogate_dir() -> io::Result<PathBuf> {
+pub fn chronokey_dir() -> io::Result<PathBuf> {
     let mut dir = user_home_dir()?;
-    dir.push(".tempogate");
+    dir.push(".chronokey");
     Ok(dir)
 }
 

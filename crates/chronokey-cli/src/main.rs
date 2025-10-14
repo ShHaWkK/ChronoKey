@@ -4,18 +4,18 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Context, Result};
 use base64::{engine::general_purpose::STANDARD, Engine as _};
+use chronokey_core::abe::{AbeCiphertext, AbeEngine};
+use chronokey_core::ca::CaStore;
+use chronokey_core::fsutil::{ensure_dir, ssh_dir};
+use chronokey_core::ssh;
+use chronokey_core::token::{TokenClaims, TokenSigner};
+use chronokey_core::validity::{normalize_validity, parse_ttl_seconds};
 use clap::{Parser, Subcommand};
 use rand::RngCore;
 use serde::Serialize;
-use tempogate_core::abe::{AbeCiphertext, AbeEngine};
-use tempogate_core::ca::CaStore;
-use tempogate_core::fsutil::{ensure_dir, ssh_dir};
-use tempogate_core::ssh;
-use tempogate_core::token::{TokenClaims, TokenSigner};
-use tempogate_core::validity::{normalize_validity, parse_ttl_seconds};
 
 #[derive(Parser, Debug)]
-#[command(name = "tempogate", about = "TempoGate CLI for ephemeral SSH access")]
+#[command(name = "chronokey", about = "ChronoKey CLI for ephemeral SSH access")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -66,7 +66,7 @@ enum Commands {
         #[arg(long)]
         attrs_policy: Option<String>,
     },
-    /// Redeem a token against a TempoGate issuer service
+    /// Redeem a token against a ChronoKey issuer service
     Redeem {
         #[arg(long)]
         token: String,
@@ -146,7 +146,7 @@ async fn keygen(label: &str) -> Result<()> {
     let mut path = ssh_dir().context("unable to locate ssh directory")?;
     ensure_dir(&path).context("failed to create ssh directory")?;
     path.push(label);
-    let pubkey = ssh::generate_keypair(&path, &format!("TempoGate client {label}"))?;
+    let pubkey = ssh::generate_keypair(&path, &format!("ChronoKey client {label}"))?;
     println!("Keypair generated: {}", path.display());
     println!("Public key: {}", pubkey.display());
     Ok(())
@@ -205,8 +205,8 @@ fn local_encrypt(data: &[u8]) -> Result<String> {
     use aes_gcm::{aead::Aead, aead::KeyInit, Aes256Gcm, Nonce};
     use sha2::{Digest, Sha256};
 
-    let passphrase = std::env::var("TEMPOGATE_BUNDLE_KEY")
-        .context("TEMPOGATE_BUNDLE_KEY environment variable required for local encryption")?;
+    let passphrase = std::env::var("CHRONOKEY_BUNDLE_KEY")
+        .context("CHRONOKEY_BUNDLE_KEY environment variable required for local encryption")?;
     let mut hasher = Sha256::new();
     hasher.update(passphrase.as_bytes());
     let key_bytes = hasher.finalize();
@@ -232,7 +232,7 @@ async fn token_issue(
 ) -> Result<()> {
     let ttl_secs = parse_ttl_seconds(ttl)?;
     let attributes = parse_attrs_map(attrs.as_deref())?;
-    let signer = TokenSigner::from_env("TEMPOGATE_HMAC_SECRET")?;
+    let signer = TokenSigner::from_env("CHRONOKEY_HMAC_SECRET")?;
     let claims = TokenClaims::new(user.to_string(), ttl_secs, attributes.clone())?;
     let token = signer.sign(&claims)?;
 
@@ -289,7 +289,7 @@ async fn redeem(
         .json(&request)
         .send()
         .await
-        .context("failed to reach TempoGate issuer")?;
+        .context("failed to reach ChronoKey issuer")?;
 
     if !response.status().is_success() {
         let body = response.text().await.unwrap_or_default();

@@ -21,10 +21,10 @@ jobs:
       - name: Upload linux binaries
         uses: actions/upload-artifact@v3
         with:
-          name: tempogate-linux
+          name: chronokey-linux
           path: |
-            target/debug/tempogate
-            target/debug/tempogate-issuer
+            target/debug/chronokey
+            target/debug/chronokey-issuer
 
   build-windows:
     runs-on: windows-latest
@@ -41,7 +41,7 @@ jobs:
       - name: Upload windows binaries
         uses: actions/upload-artifact@v3
         with:
-          name: tempogate-windows
+          name: chronokey-windows
           path: |
-            target\debug\tempogate.exe
-            target\debug\tempogate-issuer.exe
+            target\debug\chronokey.exe
+            target\debug\chronokey-issuer.exe

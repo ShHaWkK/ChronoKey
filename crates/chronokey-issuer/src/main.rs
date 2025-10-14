@@ -16,12 +16,12 @@ use tempfile::NamedTempFile;
 use tokio::signal;
 use tracing::{error, info};
 
-use tempogate_core::audit::{self, AuditLogEntry};
-use tempogate_core::ca::{sign_with_ca, CaKeyPair};
-use tempogate_core::config::{load_config, IssuerConfig, ValidityPolicy};
-use tempogate_core::token::{GrantToken, TokenSigner};
-use tempogate_core::validity::parse_ttl_seconds;
-use tempogate_core::zkp::{ZkEngine, ZkProof};
+use chronokey_core::audit::{self, AuditLogEntry};
+use chronokey_core::ca::{sign_with_ca, CaKeyPair};
+use chronokey_core::config::{load_config, IssuerConfig, ValidityPolicy};
+use chronokey_core::token::{GrantToken, TokenSigner};
+use chronokey_core::validity::parse_ttl_seconds;
+use chronokey_core::zkp::{ZkEngine, ZkProof};
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -77,7 +77,7 @@ async fn main() -> Result<()> {
         .route("/redeem_zk", post(redeem_zk_handler))
         .with_state(state.clone());
 
-    info!("starting TempoGate issuer", %bind_addr);
+    info!("starting ChronoKey issuer", %bind_addr);
 
     axum::Server::bind(&bind_addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())

@@ -1,7 +1,7 @@
 [workspace]
 members = [
-    "tempogate",
-    "tempogate-issuer",
-    "tempogate-core",
+    "crates/chronokey-cli",
+    "crates/chronokey-issuer",
+    "crates/chronokey-core",
 ]
 resolver = "2"
