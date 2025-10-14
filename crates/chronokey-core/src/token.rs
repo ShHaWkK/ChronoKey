@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use hmac::NewMac;
-use sha2::Digest;
 use anyhow::{anyhow, Context, Result};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
+use hmac::NewMac;
 use hmac::{Hmac, Mac};
 use rand::RngCore;
 use serde::{Deserialize, Serialize};
+use sha2::Digest;
 use sha2::Sha256;
 
 pub type HmacSha256 = Hmac<Sha256>;
@@ -63,8 +63,8 @@ impl TokenSigner {
         let header_b64 = URL_SAFE_NO_PAD.encode(serde_json::to_vec(&header)?);
         let payload_b64 = URL_SAFE_NO_PAD.encode(serde_json::to_vec(claims)?);
         let signing_input = format!("{}.{}", header_b64, payload_b64);
-        let mut mac = HmacSha256::new_from_slice(&self.secret)
-            .map_err(|_| anyhow!("invalid hmac key"))?;
+        let mut mac =
+            HmacSha256::new_from_slice(&self.secret).map_err(|_| anyhow!("invalid hmac key"))?;
         mac.update(signing_input.as_bytes());
         let signature = mac.finalize().into_bytes();
         let sig_b64 = URL_SAFE_NO_PAD.encode(signature);
@@ -77,8 +77,8 @@ impl TokenSigner {
             return Err(anyhow::anyhow!("invalid token format"));
         }
         let signing_input = format!("{}.{}", parts[0], parts[1]);
-        let mut mac = HmacSha256::new_from_slice(&self.secret)
-            .map_err(|_| anyhow!("invalid hmac key"))?;
+        let mut mac =
+            HmacSha256::new_from_slice(&self.secret).map_err(|_| anyhow!("invalid hmac key"))?;
         mac.update(signing_input.as_bytes());
         let expected = mac.finalize().into_bytes();
         let provided = URL_SAFE_NO_PAD

@@ -95,10 +95,7 @@ struct BundleDocument {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt()
-        .with_env_filter("info")
-
-        .init();
+    tracing_subscriber::fmt().with_env_filter("info").init();
     let cli = Cli::parse();
     match cli.command {
         Commands::InitCa => init_ca().await?,

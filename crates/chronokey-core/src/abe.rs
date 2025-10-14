@@ -86,7 +86,10 @@ impl AbeEngine {
                 let nonce_bytes = STANDARD
                     .decode(&ciphertext.nonce_b64)
                     .context("invalid nonce encoding")?;
-                let nonce_array: &[u8; 12] = nonce_bytes.as_slice().try_into().context("invalid nonce length")?;
+                let nonce_array: &[u8; 12] = nonce_bytes
+                    .as_slice()
+                    .try_into()
+                    .context("invalid nonce length")?;
                 let nonce = Nonce::from(*nonce_array);
                 let cipher_bytes = STANDARD
                     .decode(&ciphertext.ciphertext_b64)

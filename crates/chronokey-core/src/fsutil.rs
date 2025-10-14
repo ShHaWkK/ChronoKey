@@ -9,8 +9,6 @@ use std::fs::Permissions;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 
-
-
 pub fn user_home_dir() -> io::Result<PathBuf> {
     home_dir().ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "home directory not found"))
 }

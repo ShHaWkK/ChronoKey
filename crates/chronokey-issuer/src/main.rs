@@ -53,7 +53,8 @@ impl AppState {
             ca_key,
             token_signer: signer,
             allowed_principals: config
-                .allowed_principals.clone()
+                .allowed_principals
+                .clone()
                 .map(|list| list.into_iter().collect()),
             validity_policy: ValidityPolicy::from_config(&config),
         })
@@ -62,10 +63,7 @@ impl AppState {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt()
-        .with_env_filter("info")
-
-        .init();
+    tracing_subscriber::fmt().with_env_filter("info").init();
     let cli = Cli::parse();
     let config = load_config(&cli.config).with_context(|| "failed to load issuer config")?;
     let bind_addr: SocketAddr = config

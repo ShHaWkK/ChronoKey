@@ -109,7 +109,9 @@ pub fn sign_public_key_in_memory(
     principals: &[String],
     validity: &str,
 ) -> Result<String> {
-    let dir = tempfile::Builder::new().prefix("chronokey-sign").tempdir()?;
+    let dir = tempfile::Builder::new()
+        .prefix("chronokey-sign")
+        .tempdir()?;
     let key_path = dir.path().join("key.pub");
     std::fs::write(&key_path, public_key)?;
 
