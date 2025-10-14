@@ -102,6 +102,23 @@ impl CaStore {
     }
 }
 
+pub fn sign_public_key_in_memory(
+    ca: &CaKeyPair,
+    public_key: &str,
+    identity: &str,
+    principals: &[String],
+    validity: &str,
+) -> Result<String> {
+    let dir = tempfile::Builder::new().prefix("chronokey-sign").tempdir()?;
+    let key_path = dir.path().join("key.pub");
+    std::fs::write(&key_path, public_key)?;
+
+    let cert_path = sign_with_ca(ca, &key_path, identity, principals, validity, None)?;
+    let certificate = std::fs::read_to_string(cert_path)?;
+
+    Ok(certificate)
+}
+
 pub fn sign_with_ca(
     ca: &CaKeyPair,
     pubkey: &Path,

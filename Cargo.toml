@@ -2,6 +2,6 @@
 members = [
     "crates/chronokey-cli",
     "crates/chronokey-issuer",
-    "crates/chronokey-core",
+    "crates/chronokey-core", "crates/chronokey-web",
 ]
 resolver = "2"

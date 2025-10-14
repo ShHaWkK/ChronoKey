@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use tempfile::Builder;
 
 use anyhow::{Context, Result};
 
@@ -34,6 +35,36 @@ pub fn generate_keypair(path: &Path, comment: &str) -> Result<PathBuf> {
     let mut pubkey = path.to_path_buf();
     pubkey.set_extension("pub");
     Ok(pubkey)
+}
+
+pub fn generate_keypair_in_memory(comment: &str) -> Result<(String, String)> {
+    let dir = Builder::new().prefix("chronokey").tempdir()?;
+    let key_path = dir.path().join("key");
+
+    let ssh_keygen_path = find_ssh_keygen_path()?;
+    let status = Command::new(ssh_keygen_path)
+        .arg("-t")
+        .arg("ed25519")
+        .arg("-f")
+        .arg(&key_path)
+        .arg("-N")
+        .arg("")
+        .arg("-C")
+        .arg(comment)
+        .status()
+        .context("failed to execute ssh-keygen")?;
+
+    if !status.success() {
+        return Err(anyhow::anyhow!(
+            "ssh-keygen failed with status {:?}",
+            status.code()
+        ));
+    }
+
+    let priv_key = std::fs::read_to_string(&key_path)?;
+    let pub_key = std::fs::read_to_string(key_path.with_extension("pub"))?;
+
+    Ok((priv_key, pub_key))
 }
 
 fn find_ssh_keygen_path() -> Result<PathBuf> {
