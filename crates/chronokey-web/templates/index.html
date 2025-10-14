@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Générer une clé</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/" class="active">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+                <li><a href="/token">Générer un token</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Générer une nouvelle paire de clés SSH</h2>
+            <form action="/generate" method="post">
+                <label for="comment">Commentaire (optionnel):</label>
+                <input type="text" id="comment" name="comment">
+                <button type="submit">Générer</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

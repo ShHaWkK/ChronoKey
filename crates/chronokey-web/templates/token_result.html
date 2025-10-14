@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Token Généré</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+                <li><a href="/token" class="active">Générer un token</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Token Généré</h2>
+            <p>Voici votre token. Copiez-le et utilisez-le pour émettre un certificat.</p>
+            <pre>{{ token }}</pre>
+        </div>
+    </main>
+</body>
+</html>

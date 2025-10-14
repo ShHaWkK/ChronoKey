@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Émettre un certificat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue" class="active">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Émettre un nouveau certificat SSH</h2>
+            <form action="/issue" method="post">
+                <label for="token">Token:</label>
+                <input type="text" id="token" name="token" required>
+
+                <label for="public_key">Clé publique:</label>
+                <textarea id="public_key" name="public_key" rows="10" required></textarea>
+
+                <button type="submit">Émettre le certificat</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

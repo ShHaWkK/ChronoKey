@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Clés et Certificats</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list" class="active">Voir les clés</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Clés et Certificats Générés</h2>
+            {% if keys %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Commentaire</th>
+                            <th>Clé Publique</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key in keys %}
+                            <tr>
+                                <td>{{ key.comment }}</td>
+                                <td><pre>{{ key.public_key }}</pre></td>
+                                <td><button onclick="copyToClipboard('{{ key.private_key | escape(format="js") }}')">Copier la clé privée</button></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center">Aucune clé n'a encore été générée.</p>
+            {% endif %}
+        </div>
+    </main>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Clé privée copiée dans le presse-papiers');
+            }, function(err) {
+                alert('Erreur lors de la copie de la clé privée');
+            });
+        }
+    </script>
+</body>
+</html>

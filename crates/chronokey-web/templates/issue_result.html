@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Certificat émis</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Certificat SSH émis</h2>
+            <pre>{{ certificate }}</pre>
+        </div>
+    </main>
+</body>
+</html>

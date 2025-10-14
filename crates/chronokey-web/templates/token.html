@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Générer un token</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+                <li><a href="/token" class="active">Générer un token</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Générer un nouveau token d'accès</h2>
+            <form action="/token" method="post">
+                <label for="subject">Sujet (utilisateur):</label>
+                <input type="text" id="subject" name="subject" required>
+
+                <label for="principals">Principals (comptes système):</label>
+                <input type="text" id="principals" name="principals" required>
+
+                <button type="submit">Générer le token</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

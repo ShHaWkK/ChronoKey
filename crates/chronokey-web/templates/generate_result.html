@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChronoKey - Clé générée</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>ChronoKey</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Générer une clé</a></li>
+                <li><a href="/issue">Émettre un certificat</a></li>
+                <li><a href="/list">Voir les clés</a></li>
+                <li><a href="/token">Générer un token</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="text-center">Votre nouvelle paire de clés SSH</h2>
+            <h3>Clé privée:</h3>
+            <pre>{{ private_key }}</pre>
+            <h3>Clé publique:</h3>
+            <pre>{{ public_key }}</pre>
+        </div>
+    </main>
+</body>
+</html>
