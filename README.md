@@ -19,6 +19,11 @@ Each crate is self-contained, documented, and covered by unit tests to keep the 
 ```bash
 cargo build
 ```
+
+```bash
+cargo run 
+```
+
 ## Security posture & limits
 
 * CA private keys remain local; `ssh-keygen` is invoked to avoid re-implementing OpenSSH formats.
